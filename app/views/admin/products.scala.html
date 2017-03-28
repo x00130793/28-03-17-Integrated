@@ -1,0 +1,93 @@
+@import models.Category
+@import models.Product
+@import models.users.User
+
+@(env: play.api.Environment, categories: List[Category], products: List[Product], user: User)
+
+<!-- Pass page title and content {html between braces} to the main view -->
+@admin.adminMain("Products", user) {
+  <!-- HTML content for the index view -->
+  <div class="row">
+      <div class="col-sm-2">
+          <h4>Categories</h4>
+            <div class="list-group">
+                <!-- A link to display all products -->
+                <a href="@routes.AdminController.products(0)" class="list-group-item">All categories</a>
+
+                <!-- Start of For loop - For each c in categories add a list item -->
+                <!-- Also show the number of products in each category -->
+                @for(c <- categories) {
+                    <a href="@routes.AdminController.products(c.getId)" class="list-group-item">@c.getName
+                      <span class="badge">@c.getProducts.size()</span>
+                    </a>
+                }
+            </div>
+      </div>
+      <div class="col-sm-10">
+
+          @if(flash.containsKey("success")) {
+              <div class="alert alert-success">
+              @flash.get("success")
+              </div>
+          }
+          <table class="table table-bordered table-hover table-condensed">
+          <thead>
+          <!-- The header row-->
+          <tr>
+              <th></th>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Stock</th>
+            <th>Price</th>
+          </tr>
+          </thead>
+          <tbody>
+            <!-- Product row(s) -->
+					<!-- Start of For loop - For each p in products add a row -->
+          @for(p <- products) {
+              <tr>
+                      <!-- Display each product field value in a column -->
+                  @if(env.resource("public/images/productImages/thumbnails/" + p.getId + ".jpg").isDefined) {
+                      <td><img src="/assets/images/productImages/thumbnails/@(p.getId).jpg"/></td>
+                  } else {
+                      <td><img src="/assets/images/productImages/thumbnails/noImage.png"/></td>
+                  }
+                  <td>@p.getId</td>
+                  <td>@p.getName</td>
+                  <td>@p.getDescription</td>
+                  <td>@p.getStock</td>
+                  <td>&euro; @("%.2f".format(p.getPrice))</td>
+                  <!-- Edit product button -->
+                  <td>
+                      <a href="@routes.AdminController.updateProduct(p.getId)" class="btn-xs btn-danger">
+                      <span class="glyphicon glyphicon-pencil"></span></a>
+                  </td>
+                  <!-- Delete product button -->
+                  <td>
+                      <a href="@routes.AdminController.deleteProduct(p.getId)" class="btn-xs btn-danger"
+                        onclick="return confirmDel();">
+                        <span class="glyphicon glyphicon-trash"></span>
+                      </a>
+                  </td>
+              </tr>
+					} <!-- End of For loop -->
+          </tbody>
+        </table>
+        <p>
+          <a href="@routes.AdminController.addProduct()">
+            <button class="btn btn-primary">Add a Product</button>
+          </a>
+        </p>
+      </div>
+  </div>
+
+  <script>
+    // JavaScript function returns true if user clicks yes, otherwise, false
+    function confirmDel() {
+        return confirm('Are you sure?');
+    }
+  </script>
+
+  <!-- End of content for main -->
+}

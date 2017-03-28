@@ -1,0 +1,59 @@
+@import models.Category
+@import models.Product
+@import models.users.User
+
+@(env: play.api.Environment, categories: List[Category], products: List[Product], catId: Long, filter: String, user: User)
+
+<!-- Pass page title and content {html between braces} to the main view -->
+@main("Products", user, categories) {
+    <!-- HTML content for the index view -->
+    <div class="row">
+
+        <div class="col-sm-12">
+
+            @if(flash.containsKey("success")) {
+                <div class="alert alert-success">
+                @flash.get("success")
+                </div>
+            }
+            <div class="features_items"><!--features_items-->
+                <h2 class="title text-center">Products</h2>
+                @for(p <- products) {
+                    <div class="col-sm-4">
+                        <div class="product-image-wrapper">
+                            <div class="single-products">
+                                <div class="productinfo text-center">
+                                    @if(env.resource("public/images/productImages/thumbnails/" + p.getId + ".jpg").isDefined) {
+                                        <img src="/assets/images/productImages/thumbnails/@(p.getId).jpg"/>
+                                    } else {
+                                        <img src="/assets/images/productImages/thumbnails/noImage.png"/>
+                                    }
+
+                                <h2>&euro; @("%.2f".format(p.getPrice))</h2>
+                                <p>@p.getName</p>
+                                <a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart">
+                              </i>Add to cart</a>
+                                </div>
+                                <div class="product-overlay">
+                                    <div class="overlay-content">
+                                        <h2>&euro; @("%.2f".format(p.getPrice))</h2>
+                                        <p> @p.getDescription</p>
+                                        <a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="choose">
+                                <ul class="nav nav-pills nav-justified">
+                                    <li><a href="#"><i class="fa fa-plus-square"></i>Add to wishlist</a></li>
+                                    <li><a href="#"><i class="fa fa-plus-square"></i>Add to compare</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+        <!-- End of content for main -->
+}

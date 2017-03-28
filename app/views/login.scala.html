@@ -1,0 +1,104 @@
+@(loginForm: Form[models.users.Login], addUserForm: Form[models.users.User], user: models.users.User,  categories: List[models.Category])
+@import helper._
+
+@* Pass page title and content {html between braces} to the main view *@
+@main("Login", user, categories) {
+
+	<section id="form"><!--form-->
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-4 col-sm-offset-1">
+					<div class="login-form"><!--login form-->
+						<h2>Login to your account</h2>
+						@if(loginForm.hasGlobalErrors) {
+            						<p class="alert alert-warning">
+            					@loginForm.globalError.message
+           				</p>
+						}
+						@if(flash.containsKey("error")) {
+						    <div class="alert alert-warning">
+						    @flash.get("loginRequired")
+						    </div>
+						}
+						
+
+							<!-- The login form -->
+							@helper.form(action = controllers.routes.LoginController.loginSubmit()) {
+
+								<div class="form-group">
+								@inputText(loginForm("email"), '_label -> "",'class -> "form-control input-xs", 'placeholder -> "Email")
+								</div>
+								<div class="form-group">
+								@inputPassword(loginForm("password"), '_label -> "",'class -> "form-control input-xs", 'placeholder -> "Password")
+								</div>
+							@*<span>*@
+								@*<input type="checkbox" class="checkbox"> *@
+								@*Keep me signed in*@
+							@*</span>*@
+							@*<button type="submit" value="Sign In" class="btn btn-default">Login</button>*@
+							<div class="form-group"> <input type="submit" value="Sign In" class="btn btn-primary"> </div>
+						}
+					
+					</div><!--/login form-->
+				</div>
+				<div class="col-sm-1">
+					<h2 class="or">OR</h2>
+				</div>
+				<div class="col-sm-4">
+					<div class="signup-form"><!--sign up form-->
+						<h2>New User? Signup!</h2>
+
+						@if(flash.containsKey("success")){
+							<div class="alert alert-success">
+							@flash.get("success")
+							</div>
+						}
+						@if(flash.containsKey("fail")){
+							<div class="alert alert-danger">
+							@flash.get("fail")
+							</div>
+						}
+					</div>
+					@form(action = routes.HomeController.addUserSubmit, 'class -> "form-horizontal", 'role->"form") {
+
+						<div class="form-row">
+							<label>
+							@inputText(addUserForm("fName"), '_label -> "Fisrt Name",'class -> "form-control ")
+							</label>
+						</div>
+
+						<div class="form-row">
+							<label>
+							@inputText(addUserForm("lName"), '_label -> "Second Name",'class -> "form-control")
+							</label>
+						</div>
+
+						<div class="form-row">
+							<label>
+							@inputText(addUserForm("email"), '_label -> "E-mail",'class -> "form-control")
+							</label>
+						</div>
+
+						<div class="form-row">
+							<label>
+							@inputText(addUserForm("password"), '_label -> "Password",'class -> "form-control", 'type -> "password")
+							</label>
+						</div>
+
+
+						<div class="actions">
+							<input type="submit" value="Save" class="btn btn-primary">
+							<a href="@routes.LoginController.login()">
+							</a>
+						</div>
+
+
+					</div>
+					</div><!--/sign up form-->
+				</div>
+			</div>
+		</div>
+	</section><!--/form-->
+
+}
+}
